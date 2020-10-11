@@ -1,18 +1,35 @@
 #ifndef DEFS_H
 #define DEFS_H
+
+#include <stdlib.h>
+#define DEBUG
+
+#ifndef DEBUG
+#define ASSERT(n)
+#else
+#define ASSERT(n) \
+if (!(n)) { \
+    printf("%s - FAILED", #n);\
+    printf("On %s ", __DATE__);\
+    printf("At %s ", __TIME__);\
+    printf("In File %s ", __FILE__);\
+    printf("At Line %d\n", __LINE__);\
+    exit(1); }
+#endif
+
 typedef unsigned long long U64;
 
 #define NAME "Play Me in Chess"
 #define BRD_SQ_NUM 120
 #define MAX_MOVES 2048
 
-enum ( EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK );
-enum ( FILE_A, FILE_B, FILE_C, FILE_D, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE );
-enum ( RANK_1, RANK_2, RANK_3, RANK_4, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE );
+enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
+enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
+enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
 
-enum ( WHITE, BLACK, BOTH );
+enum { WHITE, BLACK, BOTH};
 
-enum (
+enum {
     A1 = 21, B1, C1, D1, E1, F1, G1, H1,
     A2 = 31, B2, C2, D2, E2, F2, G2, H2,
     A3 = 41, B3, C3, D3, E3, F3, G3, H3,
@@ -21,12 +38,14 @@ enum (
     A6 = 71, B6, C6, D6, E6, F6, G6, H6,
     A7 = 81, B7, C7, D7, E7, F7, G7, H7,
     A8 = 91, B8, C8, D8, E8, F8, G8, H8, NONE
-);
+};
 
-enum ( TRUE, FALSE );
+enum { TRUE, FALSE };
 
-enum ( W_KSIDE_CASTLE = 1, W_QSIDE_CASTLE = 2, B_KSIDE_CASTLE = 4, B_QSIDE_CASTLE = 8 );
+enum {W_KSIDE_CASTLE = 1, W_QSIDE_CASTLE = 2, B_KSIDE_CASTLE = 4, B_QSIDE_CASTLE = 8};
 
+/* Struct that holds en passant, if fifty moves has been played,
+position key, and move */
 typedef struct 
 {
     int move;
@@ -36,6 +55,9 @@ typedef struct
     U64 positionKey;
 } UNDO;
 
+/* Struct that holds pieces array, 64 bit # pawns array, which side
+en passant, if fifty moves has been played, history, castling permissions,
+array for different pieces and 64 bit position key */
 
 typedef struct {
     int pieces[BRD_SQ_NUM];
@@ -53,6 +75,17 @@ typedef struct {
     int majorPieces[3];
     int minorPieces[3];
     UNDO hist[MAX_MOVES];
+    int pieceList[13][10];
 } BOARD;
 
+/* Globals */
+extern int Sq120ToSq64[BRD_SQ_NUM];
+extern int Sq64To120[64];
+
+/* Macros */
+#define FR2SQ(f, r) ((21 + (f)) + ( (r) * 10) )
+#define SQ64(sq120) Sq120ToSq64[sq120]
+/* Functions */
+extern void initAll();
+void PrintBitBoard(U64 BitBoard);
 #endif /*DEFS_H*/
