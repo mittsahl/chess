@@ -6,15 +6,16 @@ int main(void)
     initAll();
     
     U64 bitboard = 0ULL;
-    printf("start:\n\n");
-    PrintBitBoard(bitboard);
-
     bitboard |= (1ULL << SQ64(D2));
-    printf("Added Pawn to D2\n\n");
+    bitboard |= (1ULL << SQ64(D3));
+    bitboard |= (1ULL << SQ64(D4));
+    
     PrintBitBoard(bitboard);
+    int count = CNT(bitboard);
+    printf("\n%d\n\n", count);
 
-    bitboard |= (1ULL << SQ64(E4));
-    printf("Added Pawn to E4\n\n");
+    int index = POP(&bitboard);
+    printf("\n\n%d\n\n", index);
     PrintBitBoard(bitboard);
     
     return (0);
