@@ -2,6 +2,14 @@
 #define DEFS_H
 
 #include <stdlib.h>
+
+/* Fills 64 bits with random numbers to fill U64 bits  */
+#define RAND_64 (   (U64)rand() + \
+                    (U64)rand() << 15 + \
+                    (U64)rand() << 30 + \
+                    (U64)rand() << 45 + \
+                    ((U64)rand() & 0xf) << 60   )
+
 #define DEBUG
 
 #ifndef DEBUG
@@ -16,19 +24,26 @@ if (!(n)) { \
     printf("At Line %d\n", __LINE__);\
     exit(1); }
 #endif
-
+/* Defining data type for the bits */
 typedef unsigned long long U64;
 
 #define NAME "Play Me in Chess"
 #define BRD_SQ_NUM 120
 #define MAX_MOVES 2048
 
+/* Enum for the piece names */
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
+
+/* enum for file names */
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
+
+/* enum for rank names */
 enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
 
+/* enum for color names */
 enum { WHITE, BLACK, BOTH};
 
+/* enum for square names on corresponding 120 element array */
 enum {
     A1 = 21, B1, C1, D1, E1, F1, G1, H1,
     A2 = 31, B2, C2, D2, E2, F2, G2, H2,
@@ -40,8 +55,10 @@ enum {
     A8 = 91, B8, C8, D8, E8, F8, G8, H8, NONE
 };
 
+/* enum for names true and false */
 enum { TRUE, FALSE };
 
+/* enum defining different castling moves */
 enum {W_KSIDE_CASTLE = 1, W_QSIDE_CASTLE = 2, B_KSIDE_CASTLE = 4, B_QSIDE_CASTLE = 8};
 
 /* Struct that holds en passant, if fifty moves has been played,
@@ -55,7 +72,7 @@ typedef struct
     U64 positionKey;
 } UNDO;
 
-/* Struct that holds pieces array, 64 bit # pawns array, which side
+/* Struct that holds pieces array, 64 bit # pawns array, which side,
 en passant, if fifty moves has been played, history, castling permissions,
 array for different pieces and 64 bit position key */
 
@@ -69,6 +86,7 @@ typedef struct {
     int play;
     int historyPlay;
     int castlePermission;   
+    /* unique number representing position on the board */
     U64 positionKey;
     int pieceNumbers [13];
     int bigPieces[3];
@@ -81,11 +99,27 @@ typedef struct {
 /* Globals */
 extern int Sq120ToSq64[BRD_SQ_NUM];
 extern int Sq64To120[64];
+extern U64 setMask[64];
+extern U64 clearMask[64];
+U64 pieceKeys[13][120];
+U64 sideKey;
+U64 CastleKeys[16];
 
 /* Macros */
 #define FR2SQ(f, r) ((21 + (f)) + ( (r) * 10) )
 #define SQ64(sq120) Sq120ToSq64[sq120]
+#define POP(b) PopBit(b)
+#define CNT(b) CountBits(b)
+
+/* clearing specified bit from bitboard */
+#define CLRBIT(bb, sq) ((bb) &= clearMask[(sq)])
+
+/* sets a specified bit from bitboard */
+#define SETBIT(bb, sq) ((bb) |= setMask[(sq)]) 
+
 /* Functions */
 extern void initAll();
-void PrintBitBoard(U64 BitBoard);
+extern void PrintBitBoard(U64 BitBoard);
+extern int PopBit(U64 *bb);
+extern int CountBits(U64 b);
 #endif /*DEFS_H*/

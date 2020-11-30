@@ -10,7 +10,11 @@ const int BitTable[64] = {
     20, 37, 17, 36, 8
 };
 
-/* Function to return index of least signifcant bit and sets bit to 0 */
+/**
+ * PopBit - function that returns index of smallest bit and sets to 0
+ * @bb: bitboard
+ * Return : index of the bit that was popped
+ */
 int PopBit(U64 *bb)
 {
     U64 b = *bb ^ (*bb - 1);
@@ -19,7 +23,11 @@ int PopBit(U64 *bb)
     return (BitTable[(fold * 0x783a9b23) >> 26]);
 }
 
-/* Function counts the number of bits that are set to 1 on bitboard */
+/**
+ * CountBits - function that counts number of bits that are set to 1 on bitboard
+ * @b: 64 bit num representing board
+ * Return: number of bits set to 1
+ */
 int CountBits(U64 b)
 {
     int r;
@@ -28,7 +36,12 @@ int CountBits(U64 b)
     return (r);
 }
 
-/* Function to visualize and print U64 bitboard as chessboard */
+/**
+ * PrintBitBoard - takes a bitBoard and prints it to terminal  
+ * visualized as a chessboard
+ * @BitBoard: bitboard to be printed
+ * Return : void
+ */
 
 void PrintBitBoard(U64 BitBoard)
 {

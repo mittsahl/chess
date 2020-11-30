@@ -1,2 +1,2 @@
 all:
-	gcc main.c init.c bitboards.c -o chess
+	gcc main.c init.c bitboards.c hashkeys.c -o chess

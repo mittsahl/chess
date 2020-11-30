@@ -2,8 +2,65 @@
 
 int Sq120ToSq64[BRD_SQ_NUM];
 int Sq64To120[64];
+U64 setMask[64];
+U64 clearMask[64];
+/* Piece Keys Indexed by square */
+U64 pieceKeys[13][120];
+U64 sideKey;
+U64 CastleKeys[16];
 
-void initSq120to64(){
+/**
+ * initHashKeys - initializes hashKey arrays with random 64bit numbers
+ * Return : void
+ */
+
+void initHashKeys() 
+{
+    int idx = 0;
+    int idx2 = 0;
+
+    for (; idx < 13; ++idx) 
+    {
+        for (; idx2 < 120; ++idx2)
+            pieceKeys[idx][idx2] = RAND_64;
+    }
+    sideKey = RAND_64;
+    for (idx = 0; idx < 16; ++idx)
+    {
+        CastleKeys[idx] = RAND_64;
+    }
+}
+
+/**
+ * initBitMasks - function that sets array of 64 bit nums used to
+ * set and clear individual bits
+ * Return: void
+ */
+
+void initBitMasks()
+{
+    int index = 0;
+
+    for (; index < 64; index++)
+    {
+        setMask[index] = 0ULL;
+        clearMask[index] = 0ULL;
+    }
+    for (index = 0; index < 64; index++)
+    {
+        setMask[index] |= (1ULL << index);
+        clearMask[index] = ~setMask[index];
+    }
+}
+
+/**
+ * initSq120to64 - initializes array of 120 and array of 64 with 
+ * corresponding values of each square in the other array
+ * Return: void
+ */
+
+void initSq120to64()
+{
     int idx = 0;
     int file = FILE_A;
     int rank = RANK_1;
@@ -28,8 +85,14 @@ void initSq120to64(){
     }
 }
 
+/**
+ * initAll - all the initialization functions for the program
+ * Return: void
+ */
 
-
-void initAll(){
+void initAll()
+{
     initSq120to64();
+    initBitMasks();
+    initHashKeys();
 }
